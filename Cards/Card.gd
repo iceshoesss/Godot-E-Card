@@ -95,7 +95,7 @@ func _ready():
 
 func _input(event):
 	match state:
-		FocusInHand,InMouse,OnStage:
+		FocusInHand,InMouse:
 			if event.is_action_pressed("click_left"):
 				if CARDSELECT:
 					state = InMouse
