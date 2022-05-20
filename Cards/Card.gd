@@ -34,7 +34,7 @@ extends MarginContainer
 #加上判断当rect_rotation是否大于等于或小于等于0，让rect_rotation始终等于0
 
 #当第n张牌放置在放置区时，拖曳第n+1张牌，已放置的所有卡牌都会到达鼠标位置
-#当返回鼠标位置之后第一次点击，并不能让该卡牌进入inmouse状态
+#当返回鼠标位置之后第一次点击，并不能让该卡牌进入inmouse状态(已解决，不知道怎么解决的
 #目前可以做到将卡牌放在放置区静止不动且无法拖曳而不产生任何bug
 #
 #
@@ -47,6 +47,8 @@ extends MarginContainer
 #inhand中加入setup也并不能完全解决，因为在发下一张牌时state未必为inhand
 #正确解决方法为在playspace的循环中加入Card.startscale = Card.rect_scale
 #任何状态下都让startscale等于当前scale
+
+#音效：1、卡牌放入放置区音效：字典盖在桌子上的沉闷的声音
 
 
 onready var CardDB = preload("res://CardDataBase.gd")
@@ -95,7 +97,7 @@ func _ready():
 
 func _input(event):
 	match state:
-		FocusInHand,InMouse,OnStage:
+		FocusInHand,OnStage:
 			if event.is_action_pressed("click_left"):
 				if CARDSELECT:
 					state = InMouse
@@ -103,6 +105,8 @@ func _input(event):
 #					targetrot = 0
 #					oldstate = state
 					CARDSELECT = false
+	match state:
+		InMouse:
 			if event.is_action_released("click_left"):#松开鼠标
 				if !CARDSELECT:
 #					CARDSELECT = true
@@ -121,11 +125,16 @@ func _input(event):
 							CARDSELECT = true
 							state = OnStage
 						else:#回到原位
-							setup = true
-							targetpos = cardpos
-							isplaced = false
-							state = ReorganiseHand
-							CARDSELECT = true
+							if isplaced:
+								targetpos = get_viewport_rect().size * 0.5
+								state = OnStage
+								CARDSELECT = true
+							else:
+								setup = true
+								targetpos = cardpos
+								isplaced = false
+								state = ReorganiseHand
+								CARDSELECT = true
 
 func _process(delta):
 	match state:
@@ -158,24 +167,25 @@ func _process(delta):
 		InMouse:
 			if setup:
 				Setup()
-			if t <= 1:
-				rect_position = startpos.linear_interpolate(get_global_mouse_position(),t)
-				rect_rotation += (0 - startrot) * delta/float(DRAWNTIME)
-#				rect_scale.x = abs(1 - 2 * t) * origscale.x
-				rect_scale += (origscale - startscale) * delta/float(ZOOMTIME)
-				if rect_scale <= origscale:
+			if true:
+				if t <= 1:
+					rect_position = startpos.linear_interpolate(get_global_mouse_position(),t)
+					rect_rotation += (0 - startrot) * delta/float(DRAWNTIME)
+	#				rect_scale.x = abs(1 - 2 * t) * origscale.x
+					rect_scale += (origscale - startscale) * delta/float(ZOOMTIME)
+					if rect_scale <= origscale:
+						rect_scale = origscale
+	#				if rect_scale.x >= origscale.x:
+	#					rect_scale.x = origscale.x
+					if t>= 0.5:
+						$CardBack.visible = false
+	#				t_draw += delta/float(DRAWNTIME)#每一帧都插值，使得曲线平滑
+					t += delta/float(DRAWNTIME)
+				else:
+	#				if oldstate != OnStage:
+					rect_position = get_global_mouse_position()
+					rect_rotation = 0
 					rect_scale = origscale
-#				if rect_scale.x >= origscale.x:
-#					rect_scale.x = origscale.x
-				if t>= 0.5:
-					$CardBack.visible = false
-#				t_draw += delta/float(DRAWNTIME)#每一帧都插值，使得曲线平滑
-				t += delta/float(DRAWNTIME)
-			else:
-#				if oldstate != OnStage:
-				rect_position = get_global_mouse_position()
-				rect_rotation = 0
-				rect_scale = origscale
 		ReorganiseHand:
 			if setup:
 				Setup()
