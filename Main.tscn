@@ -1,0 +1,69 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Cards/Card.tscn" type="PackedScene" id=2]
+[ext_resource path="res://fonts/Xolonium-Regular.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://PlaySpace.tscn" type="PackedScene" id=4]
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends Node2D
+
+
+var Card = preload(\"res://Cards/Card.tscn\").instance()
+
+func _ready():
+#	Card.position = Position2D.position
+	add_child(Card)
+"
+
+[sub_resource type="DynamicFont" id=1]
+size = 32
+font_data = ExtResource( 3 )
+
+[node name="Main" type="Node2D"]
+script = SubResource( 2 )
+
+[node name="Position2D" type="Position2D" parent="."]
+position = Vector2( 114, 446 )
+
+[node name="Position2D2" type="Position2D" parent="."]
+position = Vector2( 396, 444 )
+
+[node name="Position2D3" type="Position2D" parent="."]
+position = Vector2( 661, 455 )
+
+[node name="CardBase" parent="." instance=ExtResource( 2 )]
+margin_left = 330.0
+margin_top = 337.0
+margin_right = 330.0
+margin_bottom = 337.0
+
+[node name="Stage" type="Sprite" parent="."]
+visible = false
+
+[node name="Play1" type="Label" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 2.0
+margin_top = 617.0
+margin_right = 97.0
+margin_bottom = 656.0
+custom_fonts/font = SubResource( 1 )
+text = "Play1"
+align = 1
+valign = 1
+
+[node name="Control" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Play2" type="Label" parent="Control"]
+margin_right = 40.0
+margin_bottom = 14.0
+text = "Play2"
+
+[node name="Label" type="Label" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
+
+[node name="PlaySpace" parent="." instance=ExtResource( 4 )]
+position = Vector2( 558, 632 )

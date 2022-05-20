@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Asset/frame.png" type="Texture" id=1]
+
+[node name="CardSlot" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+rect_scale = Vector2( 0.5, 0.5 )
+
+[node name="Image" type="Sprite" parent="."]
+texture = ExtResource( 1 )
