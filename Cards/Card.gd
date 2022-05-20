@@ -95,7 +95,7 @@ func _ready():
 
 func _input(event):
 	match state:
-		FocusInHand,InMouse:
+		FocusInHand,InMouse,OnStage:
 			if event.is_action_pressed("click_left"):
 				if CARDSELECT:
 					state = InMouse
@@ -106,7 +106,7 @@ func _input(event):
 			if event.is_action_released("click_left"):#松开鼠标
 				if !CARDSELECT:
 #					CARDSELECT = true
-					if oldstate == FocusInHand:#将卡牌放进stage
+					if oldstate == FocusInHand or OnStage:#将卡牌放进stage
 #						state = ReorganiseHand
 						setup = true
 						oldstate = state
