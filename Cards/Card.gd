@@ -170,7 +170,7 @@ func _process(delta):
 			if true:
 				if t <= 1:
 					rect_position = startpos.linear_interpolate(get_global_mouse_position(),t)
-					rect_rotation += (0 - startrot) * delta/float(DRAWNTIME)
+					rect_rotation += (0 - startrot) * delta/float(ZOOMTIME)
 	#				rect_scale.x = abs(1 - 2 * t) * origscale.x
 					rect_scale += (origscale - startscale) * delta/float(ZOOMTIME)
 					if rect_scale <= origscale:
@@ -180,7 +180,7 @@ func _process(delta):
 					if t>= 0.5:
 						$CardBack.visible = false
 	#				t_draw += delta/float(DRAWNTIME)#每一帧都插值，使得曲线平滑
-					t += delta/float(DRAWNTIME)
+					t += delta/float(ZOOMTIME)
 				else:
 	#				if oldstate != OnStage:
 					rect_position = get_global_mouse_position()
