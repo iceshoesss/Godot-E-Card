@@ -36,11 +36,11 @@ extends MarginContainer
 #当第n张牌放置在放置区时，拖曳第n+1张牌，已放置的所有卡牌都会到达鼠标位置
 #当返回鼠标位置之后第一次点击，并不能让该卡牌进入inmouse状态(已解决，不知道怎么解决的
 #目前可以做到将卡牌放在放置区静止不动且无法拖曳而不产生任何bug
-#
-#
-#
-#
-#
+#解决放置区卡牌会达到鼠标位置的问题
+#解决点击非卡牌位置放置区卡牌会达到鼠标的问题
+#在卡牌区域添加参数mouse_entered，只有当鼠标位于卡牌区域时才可以点击卡牌
+#点击卡牌时仅仅考虑单张选中卡牌,也可以直接写状态，当mouse_entered状态改变时只能改变单张卡牌
+
 #发牌时如果将鼠标放在某张牌上之后，后续发牌时该卡牌scale会变化，猜测和t有关
 #改变了该牌的state，当鼠标放上去时state变为focusinhand，将其变为inhand即可
 #inhand中setup = true
@@ -102,10 +102,11 @@ func _input(event):
 		FocusInHand,OnStage:
 			if event.is_action_pressed("click_left") and mouse_entered:
 				if CARDSELECT:
-					if $"../".get_child(card_number).state == FocusInHand:
-						$"../".get_child(card_number).state = InMouse
-					if $"../".get_child(card_number).state == OnStage:
-						$"../".get_child(card_number).state = InMouse
+#					if $"../".get_child(card_number).state == FocusInHand:
+#						$"../".get_child(card_number).state = InMouse
+#					if $"../".get_child(card_number).state == OnStage:
+#						$"../".get_child(card_number).state = InMouse
+					state = InMouse
 					setup = true
 					CARDSELECT = false
 
