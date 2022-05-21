@@ -63,6 +63,7 @@ enum{
 	FocusInHand
 	MoveDrawnCardToHand
 	ReorganiseHand
+	ForceOnStage
 }
 var state = InHand
 var startpos = Vector2()
@@ -80,6 +81,7 @@ var isreorganiseneighbours = true
 var isneighbourmove = false
 var isplaced = false
 var CARDSELECT = true
+var mouse_entered = false
 var startscale = Vector2()
 var origscale = rect_scale
 var zoomsize = 2
@@ -97,19 +99,21 @@ func _ready():
 
 func _input(event):
 	match state:
-		FocusInHand:
-			if event.is_action_pressed("click_left"):
+		FocusInHand,OnStage:
+			if event.is_action_pressed("click_left") and mouse_entered:
 				if CARDSELECT:
-					state = InMouse
+					if $"../".get_child(card_number).state == FocusInHand:
+						$"../".get_child(card_number).state = InMouse
+					if $"../".get_child(card_number).state == OnStage:
+						$"../".get_child(card_number).state = InMouse
 					setup = true
-#					targetrot = 0
-#					oldstate = state
 					CARDSELECT = false
-		OnStage:
-			if event.is_action_pressed("click_left"):
-				state = InMouse
-				setup = true
-				CARDSELECT = false
+
+#		OnStage:
+#			if event.is_action_pressed("click_left"):
+#				state = InMouse
+#				setup = true
+#				CARDSELECT = false
 		InMouse:
 			if event.is_action_released("click_left"):#松开鼠标
 				if !CARDSELECT:
@@ -125,9 +129,9 @@ func _input(event):
 							targetpos = get_viewport_rect().size * 0.5
 							targetrot = 0
 							setup = true
-							isplaced = true
+							$"../".get_child(card_number).isplaced = true
 							CARDSELECT = true
-							state = OnStage
+							$"../".get_child(card_number).state = OnStage
 						else:#回到原位
 							if isplaced:
 								targetpos = get_viewport_rect().size * 0.5
@@ -337,6 +341,7 @@ func ResetCard(cardnumber):
 			neighbourcard.setup = true
 
 func _on_TextureButton_mouse_entered():
+	mouse_entered = true
 	match state:
 		InHand,ReorganiseHand:
 			setup = true
@@ -346,11 +351,14 @@ func _on_TextureButton_mouse_entered():
 			$Node2D/CardArea.rect_size.y*0.4*zoomsize/(2)#聚焦坐标固定为刚好底面为牌底
 #			targetrot = 0
 			state = FocusInHand
+			mouse_entered = true
 
 
 func _on_TextureButton_mouse_exited():
+	mouse_entered = false
 	if state == FocusInHand:
 		setup = true
 		targetpos.y = cardpos.y
 		state = ReorganiseHand
+		mouse_entered = false
 #		targetrot = rect_rotation

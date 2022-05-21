@@ -32,11 +32,9 @@ margin_bottom = 234.0
 script = ExtResource( 6 )
 
 [node name="CardCollision" type="Area2D" parent="."]
-scale = Vector2( 1, 1 )
 
 [node name="CardCollisionArea" type="CollisionShape2D" parent="CardCollision"]
 position = Vector2( 0, 215 )
-scale = Vector2( 1, 1 )
 shape = SubResource( 1 )
 
 [connection signal="mouse_entered" from="Node2D/CardArea" to="." method="_on_TextureButton_mouse_entered"]
