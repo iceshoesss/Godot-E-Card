@@ -1,7 +1,7 @@
 #extends Node
 
 
-enum {Citizen,Emperor,Slave,HH,GJ,MG}
+enum {Citizen,Emperor,Slave,Cardback}
 const DATA = {
 	Citizen:
 		["res://Asset/citizen.png","citizen"],
@@ -9,10 +9,6 @@ const DATA = {
 		["res://Asset/emperor.png","emperor"],
 	Slave:
 		["res://Asset/slave.png","slave"],
-	HH:
-		["res://Asset/honghuo.png","HH"],
-	GJ:
-		["res://Asset/gongjiang.png","GJ"],
-	MG:
-		["res://Asset/miguan.png","MG"]
-}
+	Cardback:
+		["res://Asset/slave.png","slave"],
+		}
