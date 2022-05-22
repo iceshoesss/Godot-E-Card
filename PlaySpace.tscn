@@ -32,10 +32,10 @@ texture = ExtResource( 3 )
 position = Vector2( 1156, 414 )
 
 [node name="DeckDraw" type="TextureButton" parent="Deck"]
-margin_left = -123.0
-margin_top = -277.0
-margin_right = 183.0
-margin_bottom = 192.0
+margin_left = -127.0
+margin_top = -94.0
+margin_right = 179.0
+margin_bottom = 375.0
 rect_scale = Vector2( 0.4, 0.4 )
 rect_pivot_offset = Vector2( 153, 234 )
 shortcut = SubResource( 2 )
@@ -48,7 +48,7 @@ script = ExtResource( 5 )
 [node name="CardBacks" type="Node2D" parent="."]
 
 [node name="CardBack" parent="CardBacks" instance=ExtResource( 6 )]
-position = Vector2( 85, 369 )
+position = Vector2( 1185, 132 )
 scale = Vector2( 0.4, 0.4 )
 
 [node name="EnemyCards" type="Node2D" parent="."]
@@ -56,25 +56,17 @@ scale = Vector2( 0.4, 0.4 )
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="Restart" type="Button" parent="UI"]
-anchor_left = 0.923
-anchor_top = 0.254
-anchor_right = 0.923
-anchor_bottom = 0.254
-margin_left = -38.4401
-margin_top = -34.88
-margin_right = 37.5599
-margin_bottom = 35.12
+margin_left = 127.0
+margin_top = 150.0
+margin_right = 203.0
+margin_bottom = 220.0
 icon = ExtResource( 4 )
 
 [node name="Quit" type="Button" parent="UI"]
-anchor_left = 0.131
-anchor_top = 0.153
-anchor_right = 0.131
-anchor_bottom = 0.153
-margin_left = -37.68
-margin_top = -35.16
-margin_right = 38.32
-margin_bottom = 34.84
+margin_left = 128.0
+margin_top = 47.0
+margin_right = 239.0
+margin_bottom = 117.0
 text = "QUIT"
 icon = ExtResource( 4 )
 

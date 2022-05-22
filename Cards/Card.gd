@@ -63,9 +63,11 @@ enum{
 	InMouse
 	FocusInHand
 	MoveDrawnCardToHand
+	MoveDrawnCardToEnemyHand
 	ReorganiseHand
 	InEnemyHand
 }
+
 var state = InHand
 var startpos = Vector2()
 var targetpos = Vector2()
@@ -81,6 +83,7 @@ var setup = true
 var isreorganiseneighbours = true
 var isneighbourmove = false
 var isplaced = false
+var isenemyhand = true
 var CARDSELECT = true
 var mouse_entered = false
 var startscale = Vector2()
@@ -254,12 +257,14 @@ func _process(delta):
 				"""
 				#一共1/(delta/float(DRAWNTIME))帧，每帧旋转角度
 				rect_rotation += (targetrot - startrot) * delta/float(DRAWNTIME)
-				rect_scale.x = abs(1 - 2 * t_draw) * origscale.x
-				if rect_scale.x >= origscale.x:
-					rect_scale.x = origscale.x
-				if t_draw >= 0.5:
-					$CardBack.visible = false
-				t_draw += delta/float(DRAWNTIME)#每一帧都插值，使得曲线平滑
+#				isenemyhand = $"../..".isenemyhand
+				if !isenemyhand:
+					rect_scale.x = abs(1 - 2 * t_draw) * origscale.x
+					if rect_scale.x >= origscale.x:
+						rect_scale.x = origscale.x
+					if t_draw >= 0.5:
+						$CardBack.visible = false
+					t_draw += delta/float(DRAWNTIME)#每一帧都插值，使得曲线平滑
 				t += delta/float(DRAWNTIME)
 			else:
 				rect_position = targetpos
@@ -333,16 +338,17 @@ func _on_TextureButton_mouse_entered():
 	mouse_entered = true
 	match state:
 		InHand,ReorganiseHand:
-			setup = true
-			targetpos = cardpos
-#			targetpos.y = cardpos.y - $Node2D/CardArea.rect_size.y/(zoomsize*2)
-			targetpos.y = get_viewport_rect().size.y - \
-			$Node2D/CardArea.rect_size.y*0.4*zoomsize/(2)#聚焦坐标固定为刚好底面为牌底
-#			targetrot = 0
-			state = FocusInHand
-			mouse_entered = true
-#			print(number_cards_in_hand)
-#			print(card_number)
+			if !isenemyhand:
+				setup = true
+				targetpos = cardpos
+	#			targetpos.y = cardpos.y - $Node2D/CardArea.rect_size.y/(zoomsize*2)
+				targetpos.y = get_viewport_rect().size.y - \
+				$Node2D/CardArea.rect_size.y*0.4*zoomsize/(2)#聚焦坐标固定为刚好底面为牌底
+	#			targetrot = 0
+				state = FocusInHand
+				mouse_entered = true
+	#			print(number_cards_in_hand)
+	#			print(card_number)
 
 
 func _on_TextureButton_mouse_exited():

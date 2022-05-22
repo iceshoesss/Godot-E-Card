@@ -37,6 +37,7 @@ var OvalAngleVector = Vector2()
 var spread_rad = 0.15
 var number_cards_in_hand = 1
 var card_number = 0
+var enemy_card_number = 0
 var is_card_in_stage = false
 
 
@@ -46,6 +47,7 @@ enum{
 	InMouse
 	FocusInHand
 	MoveDrawnCardToHand
+	MoveDrawnCardToEnemyHand
 	ReorganiseHand
 	InEnemyHand
 }
@@ -58,6 +60,7 @@ func _ready():
 	
 
 func drawcard():
+#	isenemyhand = !isenemyhand
 	if Input.is_action_just_pressed("click_left"):
 		number_cards_in_hand = $Cards.get_child_count() + 1
 		#不能用number_cards_in_hand/2 - 1/2可能是bug，不对，应该是数据类型的问题，1/2不是float型
@@ -67,6 +70,7 @@ func drawcard():
 		var new_card = CardBase.instance()
 		CardSelect = randi()%DeckSize
 		new_card.card_name = PlayerHand.SLAVECARDLIST[CardSelect]
+		PlayerHand.CARDBACK.append(PlayerHand.SLAVECARDLIST[CardSelect])#确定对手手牌是什么
 #		card_name = new_card.card_name
 #		new_card.rect_position = get_global_mouse_position()
 #		不再以鼠标的位置为起点，而是椭圆形分布
@@ -78,7 +82,9 @@ func drawcard():
 		new_card.startrot = 0
 		new_card.targetrot = 90-rad2deg(angle)
 #		new_card.rect_rotation = 90-rad2deg(angle)
+		new_card.isenemyhand = false
 		new_card.state = MoveDrawnCardToHand
+#		print(isenemyhand)
 		new_card.card_number = number_cards_in_hand-1
 		new_card.number_cards_in_hand = number_cards_in_hand -1
 		card_number = 0
@@ -116,13 +122,44 @@ func drawcard():
 func drawenemycard():
 	var new_card = CardBase.instance()
 	var number_cards_of_enemy = $EnemyCards.get_child_count() + 1
-	PlayerHand.CARDBACK.append("Slave")
-#	new_card.card_name = PlayerHand.SLAVECARDLIST[0]
+#	PlayerHand.CARDBACK.append("Slave")
+	new_card.card_name = PlayerHand.CARDBACK[enemy_card_number]
+	enemy_card_number += 1
 	angle0 = deg2rad(90)-(number_cards_of_enemy * 0.5 - 0.5)*spread_rad
 	angle = (PI - angle0) * 2 + angle0
 	OvalAngleVector = Vector2(hor_rad * cos(angle),-ver_rad * sin(angle))
-	new_card.rect_position = OvalAngleVector + EnemyCenterCardOval
-	new_card.state = InEnemyHand
+	new_card.startpos = $CardBacks/CardBack.position
+	new_card.targetpos = OvalAngleVector + EnemyCenterCardOval
+	new_card.cardpos = new_card.targetpos #卡牌的默认位置（固定）
+	new_card.startrot = 0
+	new_card.targetrot = (90-rad2deg(angle))
+	new_card.isenemyhand = true
+	new_card.state = MoveDrawnCardToHand
+#	for Card in $EnemyCards.get_children():
+##			angle = deg2rad(90)+(number_cards_in_hand * 0.5 - 0.5)*spread_rad
+#			angle0 = deg2rad(90)+(number_cards_of_enemy * 0.5 - 0.5 - card_number)*spread_rad
+#			angle = (PI - angle0) * 2 + angle0
+#			OvalAngleVector = Vector2(hor_rad * cos(angle),-ver_rad * sin(angle))
+#			Card.startpos = Card.rect_position
+#			Card.t = 0
+#			Card.targetpos = OvalAngleVector + EnemyCenterCardOval
+#			Card.cardpos = Card.targetpos
+#			Card.startrot = Card.rect_rotation
+##			angle -= spread_rad
+#			Card.targetrot = (90-rad2deg(angle))
+#			Card.card_number = number_cards_of_enemy
+#			number_cards_of_enemy += 1
+##			Card.state = ReorganiseHand #点了下一张牌之后状态变更，卡牌不再翻转
+#			if Card.state == InHand:
+#				Card.t = 0
+#				Card.state = ReorganiseHand
+##				Card.startpos = Card.rect_position
+#				Card.startscale = Card.rect_position
+#			elif Card.state == MoveDrawnCardToHand:
+#				Card.startpos = Card.rect_position
+#			Card.startscale = Card.rect_scale
+#			Card.number_cards_in_hand = number_cards_of_enemy
+	
 	$EnemyCards.add_child(new_card)
 #	print(drawcard().OvalAngleVector)
 	
