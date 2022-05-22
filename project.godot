@@ -22,7 +22,6 @@ _global_script_class_icons={
 
 config/name="E- Card"
 run/main_scene="res://PlaySpace.tscn"
-config/icon="res://icon.png"
 
 [display]
 

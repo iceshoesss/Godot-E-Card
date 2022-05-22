@@ -19,6 +19,7 @@ var CardSlot = preload("res://Cards/CardSlot.tscn")
 var CardSelect = []
 
 onready var DeckSize = PlayerHand.SLAVECARDLIST.size()
+onready var EnemyDeckSize = PlayerHand.SLAVECARDLIST.size()
 """
 椭圆参数方程
 x=acosθ,y=bsinθ
@@ -27,6 +28,7 @@ x=acosθ,y=bsinθ
 """
 #椭圆中心位置
 onready var CenterCardOval = Vector2(0.5,1.35) * get_viewport().size
+onready var EnemyCenterCardOval = Vector2(0.5,-1.35) * get_viewport().size
 onready var hor_rad = get_viewport().size.x * 0.45
 onready var ver_rad = get_viewport().size.y * 0.4
 var angle = 0
@@ -107,7 +109,62 @@ func drawcard():
 #		angle -= spread_rad
 		number_cards_in_hand += 1
 		return DeckSize
-		
+
+func drawenemycard():
+	if Input.is_action_just_pressed("click_left"):
+		number_cards_in_hand = $Cards.get_child_count() + 1
+		#不能用number_cards_in_hand/2 - 1/2可能是bug，不对，应该是数据类型的问题，1/2不是float型
+		angle = deg2rad(90)-(number_cards_in_hand * 0.5 - 0.5)*spread_rad
+		EnemyDeckSize = PlayerHand.SLAVECARDLIST.size()
+#		angle = deg2rad(90) + 0.4
+		var new_card = CardBase.instance()
+		CardSelect = randi()%EnemyDeckSize
+		new_card.card_name = PlayerHand.SLAVECARDLIST[CardSelect]
+#		new_card.rect_position = get_global_mouse_position()
+#		不再以鼠标的位置为起点，而是椭圆形分布
+		#椭圆参数方程
+		OvalAngleVector = Vector2(hor_rad * cos(angle),ver_rad * sin(angle))
+		new_card.startpos = $Deck.position
+		new_card.targetpos = OvalAngleVector + EnemyCenterCardOval
+		new_card.cardpos = new_card.targetpos #卡牌的默认位置（固定）
+		new_card.startrot = 0
+		new_card.targetrot = 90-rad2deg(angle)
+#		new_card.rect_rotation = 90-rad2deg(angle)
+		new_card.state = MoveDrawnCardToHand
+		new_card.card_number = number_cards_in_hand-1
+		new_card.number_cards_in_hand = number_cards_in_hand -1
+		card_number = 0
+		for Card in $Cards.get_children():
+#			angle = deg2rad(90)+(number_cards_in_hand * 0.5 - 0.5)*spread_rad
+			angle = deg2rad(90)+(number_cards_in_hand * 0.5 - 0.5 - card_number)*spread_rad
+			OvalAngleVector = Vector2(hor_rad * cos(angle),-ver_rad * sin(angle))
+			Card.startpos = Card.rect_position
+			Card.t = 0
+			Card.targetpos = OvalAngleVector + CenterCardOval
+			Card.cardpos = Card.targetpos
+			Card.startrot = Card.rect_rotation
+#			angle -= spread_rad
+			Card.targetrot = 90-rad2deg(angle)
+			Card.card_number = card_number
+			card_number += 1
+#			Card.state = ReorganiseHand #点了下一张牌之后状态变更，卡牌不再翻转
+			if Card.state == InHand:
+				Card.t = 0
+				Card.state = ReorganiseHand
+#				Card.startpos = Card.rect_position
+				Card.startscale = Card.rect_position
+			elif Card.state == MoveDrawnCardToHand:
+				Card.startpos = Card.rect_position
+			Card.startscale = Card.rect_scale
+			Card.number_cards_in_hand = number_cards_in_hand -1
+		$Cards.add_child(new_card)
+#		new_card.state = InHand
+		PlayerHand.SLAVECARDLIST.erase(PlayerHand.SLAVECARDLIST[CardSelect])
+		EnemyDeckSize -= 1
+#		angle -= spread_rad
+		number_cards_in_hand += 1
+		return EnemyDeckSize
+
 func ReParent(CardNumber):
 	var Card = $Cards.get_child(CardNumber)
 	$Cards.remove_child(Card)
