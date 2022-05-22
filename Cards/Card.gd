@@ -48,7 +48,8 @@ extends MarginContainer
 #正确解决方法为在playspace的循环中加入Card.startscale = Card.rect_scale
 #任何状态下都让startscale等于当前scale
 
-#音效：1、卡牌放入放置区音效：字典盖在桌子上的沉闷的声音
+#number_cards_in_hand错误，每张卡片第二次focus才可以显示正确手牌数量，第一次总为0
+#在发牌阶段的PlaySpace中的for循环中直接传递，而非在focus中传递
 
 
 onready var CardDB = preload("res://CardDataBase.gd")
@@ -97,6 +98,7 @@ func _ready():
 #	var card_size = rect_size
 #	$Border.scale *= card_size/$Border.texture.get_size()
 	$Card.texture = load(CardImg)
+	
 
 func _input(event):
 	match state:
@@ -136,7 +138,7 @@ func _input(event):
 							targetrot = 0
 							setup = true
 							$"../".get_child(card_number).isplaced = true
-							$"../../".ReParent()
+#							$"../../".ReParent()
 #							card_on_stage = $"../".get_child(card_number)
 #							var new_parent = get_parent().get_parent().get_child(3)
 #							get_parent().remove_child(self)
@@ -252,7 +254,7 @@ func _process(delta):
 				t += delta/float(ZOOMTIME)#每一帧都插值，使得曲线平滑
 				if isreorganiseneighbours:
 					isreorganiseneighbours = false
-					number_cards_in_hand = $"../..".number_cards_in_hand - 2
+#					number_cards_in_hand = $"../..".number_cards_in_hand - 2
 					if card_number - 1 >=0:
 						MoveNeighbourCard(card_number - 1,true,1)
 					if card_number - 2 >=0:

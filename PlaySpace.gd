@@ -72,6 +72,7 @@ func drawcard():
 #		new_card.rect_rotation = 90-rad2deg(angle)
 		new_card.state = MoveDrawnCardToHand
 		new_card.card_number = number_cards_in_hand-1
+		new_card.number_cards_in_hand = number_cards_in_hand -1
 		card_number = 0
 		for Card in $Cards.get_children():
 #			angle = deg2rad(90)+(number_cards_in_hand * 0.5 - 0.5)*spread_rad
@@ -95,6 +96,7 @@ func drawcard():
 			elif Card.state == MoveDrawnCardToHand:
 				Card.startpos = Card.rect_position
 			Card.startscale = Card.rect_scale
+			Card.number_cards_in_hand = number_cards_in_hand -1
 		$Cards.add_child(new_card)
 #		new_card.state = InHand
 		PlayerHand.SLAVECARDLIST.erase(PlayerHand.SLAVECARDLIST[CardSelect])
@@ -106,7 +108,7 @@ func ReParent():
 	number_cards_in_hand -= 1
 	var Card = $Cards.get_child(card_number)
 	$Cards.remove_child(Card)
-	$CardsOnStage.add_child(Card)
+#	$CardsOnStage.add_child(Card)
 	
 func OrganiseHand():
 	card_number = 0
