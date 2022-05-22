@@ -90,6 +90,7 @@ var card_number = 0
 var neighbourcard
 var spreadfactorsize = 50
 var oldstate = INF
+var card_on_stage = 0
 #var mousepos = get_global_mouse_position()
 
 func _ready():
@@ -120,7 +121,11 @@ func _input(event):
 				if !CARDSELECT:
 #					CARDSELECT = true
 					if oldstate == FocusInHand or OnStage:#将卡牌放进stage
-#						state = ReorganiseHand
+#						var card_on_stage = $"../".get_child(card_number)
+#						var CarOnStage = $"../.."/CarsOnStage
+#						if card_on_stage.get_parent():
+#							card_on_stage.get_parent().remove_child(card_on_stage)
+#						CarOnStage.add_child(card_on_stage)
 						setup = true
 						oldstate = state
 #						if $"../../".is_card_in_stage:
@@ -131,8 +136,17 @@ func _input(event):
 							targetrot = 0
 							setup = true
 							$"../".get_child(card_number).isplaced = true
+							$"../../".ReParent()
+#							card_on_stage = $"../".get_child(card_number)
+#							var new_parent = get_parent().get_parent().get_child(3)
+#							get_parent().remove_child(self)
+#							new_parent.add_child(self)
+#							var CarOnStage = $"../.."/CarsOnStage
+#							if card_on_stage.get_parent():
+#								card_on_stage.get_parent().remove_child(card_on_stage)
+#							CarOnStage.add_child(card_on_stage)
 							CARDSELECT = true
-							$"../".get_child(card_number).state = OnStage
+							state = OnStage
 						else:#回到原位
 							if isplaced:
 								targetpos = get_viewport_rect().size * 0.5
@@ -150,6 +164,7 @@ func _process(delta):
 		InHand:
 			pass
 		OnStage:
+#			print(card_on_stage)
 #			CARDSELECT = false
 			oldstate = state
 			if setup:
@@ -311,6 +326,7 @@ func _process(delta):
 					rect_scale = origscale
 #					state = InHand
 
+
 func Setup():
 	startpos = rect_position
 	startrot = rect_rotation
@@ -353,6 +369,8 @@ func _on_TextureButton_mouse_entered():
 #			targetrot = 0
 			state = FocusInHand
 			mouse_entered = true
+			print(number_cards_in_hand)
+			print(card_number)
 
 
 func _on_TextureButton_mouse_exited():

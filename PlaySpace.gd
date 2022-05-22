@@ -102,8 +102,37 @@ func drawcard():
 #		angle -= spread_rad
 		number_cards_in_hand += 1
 		return DeckSize
-
-
+func ReParent():
+	number_cards_in_hand -= 1
+	var Card = $Cards.get_child(card_number)
+	$Cards.remove_child(Card)
+	$CardsOnStage.add_child(Card)
+	
+func OrganiseHand():
+	card_number = 0
+	for Card in $Cards.get_children():
+		if Card.state == InHand:
+			angle = deg2rad(90)+(number_cards_in_hand * 0.5 - 0.5 - card_number)*spread_rad
+			OvalAngleVector = Vector2(hor_rad * cos(angle),-ver_rad * sin(angle))
+			Card.startpos = Card.rect_position
+			Card.t = 0
+			Card.targetpos = OvalAngleVector + CenterCardOval
+			Card.cardpos = Card.targetpos
+			Card.startrot = Card.rect_rotation
+	#			angle -= spread_rad
+			Card.targetrot = 90-rad2deg(angle)
+			Card.card_number = card_number
+			card_number += 1
+	#			Card.state = ReorganiseHand #点了下一张牌之后状态变更，卡牌不再翻转
+			if Card.state == InHand:
+				Card.t = 0
+				Card.state = ReorganiseHand
+	#				Card.startpos = Card.rect_position
+				Card.startscale = Card.rect_position
+			elif Card.state == MoveDrawnCardToHand:
+				Card.startpos = Card.rect_position
+			Card.startscale = Card.rect_scale
+	
 func _on_Restart_pressed():
 	PlayerHand.SLAVECARDLIST.append_array(["Slave","Citizen","Emperor","Citizen","Citizen"])
 	$Deck/DeckDraw.disabled = false
@@ -118,3 +147,7 @@ func _on_Restart_pressed():
 #
 #func _on_CardStage_area_exited(_area):
 #	is_card_in_stage = false
+
+
+func _on_Quit_pressed():
+	get_tree().quit()
