@@ -55,6 +55,7 @@ func _ready():
 
 func drawcard():
 	if Input.is_action_just_pressed("click_left"):
+		number_cards_in_hand = $Cards.get_child_count() + 1
 		#不能用number_cards_in_hand/2 - 1/2可能是bug，不对，应该是数据类型的问题，1/2不是float型
 		angle = deg2rad(90)-(number_cards_in_hand * 0.5 - 0.5)*spread_rad
 		DeckSize = PlayerHand.SLAVECARDLIST.size()
