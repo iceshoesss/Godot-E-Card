@@ -38,6 +38,7 @@ var spread_rad = 0.15
 var number_cards_in_hand = 1
 var card_number = 0
 var enemy_card_number = 0
+var number_cards_of_enemy = 0
 var is_card_in_stage = false
 
 
@@ -121,8 +122,7 @@ func drawcard():
 
 func drawenemycard():
 	var new_card = CardBase.instance()
-	var number_cards_of_enemy = $EnemyCards.get_child_count() + 1
-#	PlayerHand.CARDBACK.append("Slave")
+	number_cards_of_enemy = $EnemyCards.get_child_count() + 1
 	new_card.card_name = PlayerHand.CARDBACK[enemy_card_number]
 	enemy_card_number += 1
 	angle0 = deg2rad(90)-(number_cards_of_enemy * 0.5 - 0.5)*spread_rad
@@ -135,30 +135,28 @@ func drawenemycard():
 	new_card.targetrot = (90-rad2deg(angle))
 	new_card.isenemyhand = true
 	new_card.state = MoveDrawnCardToHand
-#	for Card in $EnemyCards.get_children():
-##			angle = deg2rad(90)+(number_cards_in_hand * 0.5 - 0.5)*spread_rad
-#			angle0 = deg2rad(90)+(number_cards_of_enemy * 0.5 - 0.5 - card_number)*spread_rad
-#			angle = (PI - angle0) * 2 + angle0
-#			OvalAngleVector = Vector2(hor_rad * cos(angle),-ver_rad * sin(angle))
-#			Card.startpos = Card.rect_position
-#			Card.t = 0
-#			Card.targetpos = OvalAngleVector + EnemyCenterCardOval
-#			Card.cardpos = Card.targetpos
-#			Card.startrot = Card.rect_rotation
-##			angle -= spread_rad
-#			Card.targetrot = (90-rad2deg(angle))
-#			Card.card_number = number_cards_of_enemy
-#			number_cards_of_enemy += 1
-##			Card.state = ReorganiseHand #点了下一张牌之后状态变更，卡牌不再翻转
-#			if Card.state == InHand:
-#				Card.t = 0
-#				Card.state = ReorganiseHand
-##				Card.startpos = Card.rect_position
-#				Card.startscale = Card.rect_position
-#			elif Card.state == MoveDrawnCardToHand:
-#				Card.startpos = Card.rect_position
-#			Card.startscale = Card.rect_scale
-#			Card.number_cards_in_hand = number_cards_of_enemy
+	enemy_card_number = 0
+	for Card in $EnemyCards.get_children():
+			angle0 = deg2rad(90)+(number_cards_of_enemy * 0.5 - 0.5 - enemy_card_number)*spread_rad
+			angle = (PI - angle0) * 2 + angle0
+			OvalAngleVector = Vector2(hor_rad * cos(angle),-ver_rad * sin(angle))
+			Card.startpos = Card.rect_position
+			Card.t = 0
+			Card.targetpos = OvalAngleVector + EnemyCenterCardOval
+			Card.cardpos = Card.targetpos
+			Card.startrot = Card.rect_rotation
+			Card.targetrot = 90-rad2deg(angle)
+			enemy_card_number += 1
+			Card.card_number = enemy_card_number
+			card_number += 1
+			if Card.state == InHand:
+				Card.t = 0
+				Card.state = ReorganiseHand
+				Card.startscale = Card.rect_position
+			elif Card.state == MoveDrawnCardToHand:
+				Card.startpos = Card.rect_position
+			Card.number_cards_in_hand = number_cards_of_enemy -1
+	
 	
 	$EnemyCards.add_child(new_card)
 #	print(drawcard().OvalAngleVector)
