@@ -10,6 +10,8 @@ extends Node2D
 #当卡牌未到inhand且仍然在翻转状态时，t清零后会重新翻转
 #解决方案：在MoveDrawnCardToHand中加入一个新的计时参数t_draw定义scale
 
+#先拖拽到放置区再发牌时，发牌顺序会改变，发牌后手牌重新组织错误
+
 
 var CardBase = preload("res://Cards/Card.tscn")
 var PlayerHand = preload("res://Cards/PlayerHand.gd")
