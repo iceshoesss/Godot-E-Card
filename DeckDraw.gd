@@ -17,6 +17,6 @@ func _gui_input(_event):
 	if Input.is_action_just_pressed("click_left"):
 		if Decksize > 0:
 			Decksize = $"../..".drawcard()
-#			EnemyDecksize = $"../..".drawenemycard()
+			EnemyDecksize = $"../..".drawenemycard()
 		if Decksize == 0:
 			disabled = true

@@ -28,10 +28,11 @@ x=acosθ,y=bsinθ
 """
 #椭圆中心位置
 onready var CenterCardOval = Vector2(0.5,1.35) * get_viewport().size
-onready var EnemyCenterCardOval = Vector2(0.5,-1.35) * get_viewport().size
+onready var EnemyCenterCardOval = Vector2(0.5,-0.35) * get_viewport().size
 onready var hor_rad = get_viewport().size.x * 0.45
 onready var ver_rad = get_viewport().size.y * 0.4
 var angle = 0
+var angle0 = 0
 var OvalAngleVector = Vector2()
 var spread_rad = 0.15
 var number_cards_in_hand = 1
@@ -46,6 +47,7 @@ enum{
 	FocusInHand
 	MoveDrawnCardToHand
 	ReorganiseHand
+	InEnemyHand
 }
 
 func _ready():
@@ -65,6 +67,7 @@ func drawcard():
 		var new_card = CardBase.instance()
 		CardSelect = randi()%DeckSize
 		new_card.card_name = PlayerHand.SLAVECARDLIST[CardSelect]
+#		card_name = new_card.card_name
 #		new_card.rect_position = get_global_mouse_position()
 #		不再以鼠标的位置为起点，而是椭圆形分布
 		#椭圆参数方程
@@ -111,8 +114,18 @@ func drawcard():
 		return DeckSize
 
 func drawenemycard():
-	pass
-
+	var new_card = CardBase.instance()
+	var number_cards_of_enemy = $EnemyCards.get_child_count() + 1
+	PlayerHand.CARDBACK.append("Slave")
+#	new_card.card_name = PlayerHand.SLAVECARDLIST[0]
+	angle0 = deg2rad(90)-(number_cards_of_enemy * 0.5 - 0.5)*spread_rad
+	angle = (PI - angle0) * 2 + angle0
+	OvalAngleVector = Vector2(hor_rad * cos(angle),-ver_rad * sin(angle))
+	new_card.rect_position = OvalAngleVector + EnemyCenterCardOval
+	new_card.state = InEnemyHand
+	$EnemyCards.add_child(new_card)
+#	print(drawcard().OvalAngleVector)
+	
 func ReParent(CardNumber):
 	var Card = $Cards.get_child(CardNumber)
 	$Cards.remove_child(Card)
@@ -133,7 +146,6 @@ func OrganiseHand():
 			Card.targetrot = 90-rad2deg(angle)
 			Card.card_number = card_number
 			Card.number_cards_in_hand = number_cards_in_hand -1
-			print(number_cards_in_hand)
 			card_number += 1
 			Card.t = 0
 			Card.state = ReorganiseHand
