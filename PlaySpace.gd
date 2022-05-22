@@ -113,30 +113,24 @@ func ReParent(CardNumber):
 	
 func OrganiseHand():
 	card_number = 0
-	number_cards_in_hand -=  1
-	for OrCard in $Cards.get_children():
-		if true:
-#			number_cards_in_hand -=  $CardsOnStage.get_child_count ()
-			print(number_cards_in_hand)
-			angle = deg2rad(90)+(number_cards_in_hand * 0.5 - 1 - card_number)*spread_rad
+	number_cards_in_hand = $Cards.get_child_count()
+	for Card in $Cards.get_children():
+			angle = deg2rad(90)+(number_cards_in_hand * 0.5 - 0.5 - card_number)*spread_rad
 			OvalAngleVector = Vector2(hor_rad * cos(angle),-ver_rad * sin(angle))
-			OrCard.startpos = OrCard.rect_position
-			OrCard.t = 0
-			OrCard.targetpos = OvalAngleVector + CenterCardOval
-			OrCard.cardpos = OrCard.targetpos
-			OrCard.startrot = OrCard.rect_rotation
-			OrCard.targetrot = 90-rad2deg(angle)
-			OrCard.card_number = card_number
+			Card.startpos = Card.rect_position
+			Card.t = 0
+			Card.targetpos = OvalAngleVector + CenterCardOval
+			Card.cardpos = Card.targetpos
+			Card.startrot = Card.rect_rotation
+			Card.targetrot = 90-rad2deg(angle)
+			Card.card_number = card_number
+			Card.number_cards_in_hand = number_cards_in_hand -1
+			print(number_cards_in_hand)
 			card_number += 1
-
-#			if OrCard.state == InHand:
-			OrCard.t = 0
-			OrCard.state = ReorganiseHand
-
-			OrCard.startscale = OrCard.rect_position
-#			elif OrCard.state == MoveDrawnCardToHand:
-#				OrCard.startpos = OrCard.rect_position
-			OrCard.startscale = OrCard.rect_scale
+			Card.t = 0
+			Card.state = ReorganiseHand
+			Card.startscale = Card.rect_position
+			Card.startscale = Card.rect_scale
 	
 func _on_Restart_pressed():
 	PlayerHand.SLAVECARDLIST.append_array(["Slave","Citizen","Emperor","Citizen","Citizen"])

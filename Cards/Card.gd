@@ -341,8 +341,8 @@ func _on_TextureButton_mouse_entered():
 #			targetrot = 0
 			state = FocusInHand
 			mouse_entered = true
-#			print(number_cards_in_hand)
-#			print(card_number)
+			print(number_cards_in_hand)
+			print(card_number)
 
 
 func _on_TextureButton_mouse_exited():
