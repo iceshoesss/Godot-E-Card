@@ -138,7 +138,7 @@ func _input(event):
 							targetrot = 0
 							setup = true
 							$"../".get_child(card_number).isplaced = true
-#							$"../../".ReParent()
+							$"../../".ReParent(card_number)
 #							card_on_stage = $"../".get_child(card_number)
 #							var new_parent = get_parent().get_parent().get_child(3)
 #							get_parent().remove_child(self)
@@ -212,36 +212,7 @@ func _process(delta):
 					rect_position = get_global_mouse_position()
 					rect_rotation = 0
 					rect_scale = origscale
-		ReorganiseHand:
-			if setup:
-				Setup()
-			if t <= 1:
-				if isneighbourmove:
-					isneighbourmove = false
-#				if isplaced:
-#					targetpos = get_viewport_rect().size * 0.5
-#					state = OnStage
-				rect_position = startpos.linear_interpolate(targetpos,t)
-				rect_rotation += (targetrot - startrot) * delta/float(ORGANIZETIME)
-#				rect_rotation = startrot * (1-t) + targetrot*t
-				rect_scale += (origscale - startscale) * delta/float(ORGANIZETIME)
-				t += delta/float(ORGANIZETIME)#每一帧都插值，使得曲线平滑
-				if isreorganiseneighbours == false:
-					isreorganiseneighbours = true
-					if card_number - 1 >=0:
-						ResetCard(card_number - 1)
-					if card_number - 2 >=0:
-						ResetCard(card_number - 2)
-					if card_number + 1 <=number_cards_in_hand:
-						ResetCard(card_number + 1)
-					if card_number + 2 <=number_cards_in_hand:
-						ResetCard(card_number + 2)
-					
-			else:
-				rect_position = targetpos
-				rect_rotation = targetrot
-				rect_scale = origscale
-				state = InHand
+
 		FocusInHand:
 			oldstate = state
 			if setup:
@@ -302,7 +273,6 @@ func _process(delta):
 				if setup:
 					Setup()
 				if t <= 1:
-#					setup = true
 					if isneighbourmove:
 						isneighbourmove = false
 					rect_position = startpos.linear_interpolate(targetpos,t)
@@ -371,8 +341,8 @@ func _on_TextureButton_mouse_entered():
 #			targetrot = 0
 			state = FocusInHand
 			mouse_entered = true
-			print(number_cards_in_hand)
-			print(card_number)
+#			print(number_cards_in_hand)
+#			print(card_number)
 
 
 func _on_TextureButton_mouse_exited():

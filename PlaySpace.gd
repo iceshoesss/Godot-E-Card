@@ -104,41 +104,43 @@ func drawcard():
 #		angle -= spread_rad
 		number_cards_in_hand += 1
 		return DeckSize
-func ReParent():
-	number_cards_in_hand -= 1
-	var Card = $Cards.get_child(card_number)
+		
+func ReParent(CardNumber):
+	var Card = $Cards.get_child(CardNumber)
 	$Cards.remove_child(Card)
-#	$CardsOnStage.add_child(Card)
+	$CardsOnStage.add_child(Card)
+	OrganiseHand()
 	
 func OrganiseHand():
 	card_number = 0
-	for Card in $Cards.get_children():
-		if Card.state == InHand:
-			angle = deg2rad(90)+(number_cards_in_hand * 0.5 - 0.5 - card_number)*spread_rad
+	number_cards_in_hand -=  1
+	for OrCard in $Cards.get_children():
+		if true:
+#			number_cards_in_hand -=  $CardsOnStage.get_child_count ()
+			print(number_cards_in_hand)
+			angle = deg2rad(90)+(number_cards_in_hand * 0.5 - 1 - card_number)*spread_rad
 			OvalAngleVector = Vector2(hor_rad * cos(angle),-ver_rad * sin(angle))
-			Card.startpos = Card.rect_position
-			Card.t = 0
-			Card.targetpos = OvalAngleVector + CenterCardOval
-			Card.cardpos = Card.targetpos
-			Card.startrot = Card.rect_rotation
-	#			angle -= spread_rad
-			Card.targetrot = 90-rad2deg(angle)
-			Card.card_number = card_number
+			OrCard.startpos = OrCard.rect_position
+			OrCard.t = 0
+			OrCard.targetpos = OvalAngleVector + CenterCardOval
+			OrCard.cardpos = OrCard.targetpos
+			OrCard.startrot = OrCard.rect_rotation
+			OrCard.targetrot = 90-rad2deg(angle)
+			OrCard.card_number = card_number
 			card_number += 1
-	#			Card.state = ReorganiseHand #点了下一张牌之后状态变更，卡牌不再翻转
-			if Card.state == InHand:
-				Card.t = 0
-				Card.state = ReorganiseHand
-	#				Card.startpos = Card.rect_position
-				Card.startscale = Card.rect_position
-			elif Card.state == MoveDrawnCardToHand:
-				Card.startpos = Card.rect_position
-			Card.startscale = Card.rect_scale
+
+#			if OrCard.state == InHand:
+			OrCard.t = 0
+			OrCard.state = ReorganiseHand
+
+			OrCard.startscale = OrCard.rect_position
+#			elif OrCard.state == MoveDrawnCardToHand:
+#				OrCard.startpos = OrCard.rect_position
+			OrCard.startscale = OrCard.rect_scale
 	
 func _on_Restart_pressed():
 	PlayerHand.SLAVECARDLIST.append_array(["Slave","Citizen","Emperor","Citizen","Citizen"])
 	$Deck/DeckDraw.disabled = false
-	print($Deck/DeckDraw)
 #	for Card in $Cards.get_children():
 #		Card.queue_free()
 
