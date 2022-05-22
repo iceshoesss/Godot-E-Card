@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://Asset/back/MonsterBack.png" type="Texture" id=1]
+[ext_resource path="res://Asset/cardback.png" type="Texture" id=1]
 
 [node name="CardBack" type="Sprite"]
 texture = ExtResource( 1 )
